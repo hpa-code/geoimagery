@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question / discussion
+    url: https://github.com/hpa-code/geoimagery/discussions
+    about: For open-ended questions, ideas, and how-to help, please use Discussions.
+  - name: Earth Engine setup help
+    url: https://developers.google.com/earth-engine/guides/python_install
+    about: For issues authenticating with Earth Engine itself, see Google's docs.

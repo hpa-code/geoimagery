@@ -1,0 +1,128 @@
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Ruff
+.ruff_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+naip_venv/
+.python-version
+
+# --- Editors / OS -----------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Geospatial outputs -----------------------------------------------------
+# Don't commit downloaded imagery, intermediate rasters, or run logs.
+*.tif
+*.tiff
+*.tfw
+*.aux.xml
+*.cpg
+*.dbf
+*.prj
+*.qpj
+*.shp
+*.shx
+*.idx
+*.qix
+*.sbn
+*.sbx
+*.gpkg-shm
+*.gpkg-wal
+
+# Outputs from geoimagery itself
+naip_output/
+NAIP_GEE_*/
+University_Images_HQ/
+temp_gee_images/
+_temp/
+*download_log*.csv
+*availability*.csv
+
+# --- Earth Engine credentials ----------------------------------------------
+# Never commit credentials, even by accident.
+.config/earthengine/
+service-account*.json
+
+# --- Local lock / cache files we don't want shipped ------------------------
+.pdm-python
+.pdm-build/
+poetry.lock  # we ship uv.lock if anything; remove this line if using poetry
+
+# --- Docs build -------------------------------------------------------------
+site/
+docs/_build/

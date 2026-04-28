@@ -1,0 +1,70 @@
+name: Bug report
+description: Something isn't working the way the docs say it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill in as much as you can --
+        the more we have, the faster we can fix it.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of what went wrong, vs what you expected.
+      placeholder: When I called download() with my GeoJSON, ...
+    validations:
+      required: true
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Minimal reproducible example
+      description: |
+        The smallest snippet that triggers the issue. Please redact any
+        private data. If the bug needs a specific input file, attach a
+        small example.
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Full traceback / output
+      description: Paste the full error message and traceback, if any.
+      render: shell
+  - type: input
+    id: geoimagery-version
+    attributes:
+      label: geoimagery version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.12.4"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "macOS 14.5 / Ubuntu 24.04 / Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: dep-versions
+    attributes:
+      label: Relevant dependency versions
+      description: |
+        Output of: `python -c "import earthengine_api, geemap, geopandas, rasterio, rioxarray; ..."`.
+        Or just paste the relevant lines from `pip list`.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's [Code of Conduct](../CODE_OF_CONDUCT.md).
+          required: true
