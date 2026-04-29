@@ -60,7 +60,24 @@ Each user needs their own free Google Earth Engine account and a Cloud project �
 
 That stores a token under `~/.config/earthengine/`. You won't need to repeat it.
 
-## Quickstart
+## Run it (no code, just a GeoJSON)
+
+If you already have a GeoJSON, Shapefile, or GeoPackage of the polygons you care about, you don't need to write any Python — there's a bundled script that does the whole inventory + download for you:
+
+```bash
+export GEE_PROJECT=your-gcp-project-id
+python examples/from_geojson.py path/to/your_areas.geojson ./naip_output
+```
+
+That will:
+
+- build an availability inventory at `naip_output/availability.csv`
+- download every available NAIP month for every polygon into `naip_output/`
+- write a per-row status log at `naip_output/download_log.csv`
+
+The script is safe to re-run — it skips files already on disk, so you can `Ctrl+C` and resume any time.
+
+## Quickstart (Python API)
 
 ```python
 import geoimagery as gi
