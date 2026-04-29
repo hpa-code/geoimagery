@@ -28,11 +28,23 @@ Download high-resolution NAIP satellite imagery for **any polygon you can descri
 
 ## Install
 
+### From PyPI (once published)
+
 ```bash
 pip install "geoimagery[all]"
 ```
 
-`[all]` pulls in the geospatial stack (geopandas, rasterio, rioxarray) plus the Earth Engine clients (earthengine-api, geemap). If you only need the pure-Python helpers you can `pip install geoimagery` instead.
+### From source (right now — clone + install)
+
+```bash
+git clone https://github.com/hpa-code/geoimagery
+cd geoimagery
+python3 -m venv .venv
+source .venv/bin/activate
+pip install ".[all]"
+```
+
+Either way, `[all]` pulls in the geospatial stack (geopandas, rasterio, rioxarray) plus the Earth Engine clients (earthengine-api, geemap). If you only need the pure-Python helpers you can drop the `[all]` extras.
 
 ### One-time Earth Engine setup
 
