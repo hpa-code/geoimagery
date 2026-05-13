@@ -26,6 +26,8 @@ Download high-resolution NAIP satellite imagery for **any polygon you can descri
 - **Typed.** Ships a `py.typed` marker — full mypy support out of the box.
 - **MIT licensed.** Use it commercially, fork it, embed it.
 
+---
+
 ## Install
 
 ```bash
@@ -44,7 +46,7 @@ pip install ".[all]"
 ```
 </details>
 
-### One-time Earth Engine setup
+## One-time Earth Engine setup
 
 Each user needs their own free Google Earth Engine account and a Cloud project — credentials cannot be shared.
 
@@ -58,9 +60,11 @@ Each user needs their own free Google Earth Engine account and a Cloud project �
 
 That stores a token under `~/.config/earthengine/`. You won't need to repeat it.
 
-## Run it (no code, just a GeoJSON)
+---
 
-If you already have a GeoJSON, Shapefile, or GeoPackage of the polygons you care about, you don't need to write any Python — there's a bundled script that does the whole inventory + download for you:
+## Option A — No code: just point it at a file
+
+> **This is the recommended way.** If you have a GeoJSON, Shapefile, or GeoPackage, you don't need to write any Python.
 
 ```bash
 export GEE_PROJECT=your-gcp-project-id
@@ -73,9 +77,15 @@ That will:
 - download every available NAIP month for every polygon into `naip_output/`
 - write a per-row status log at `naip_output/download_log.csv`
 
-The script is safe to re-run — it skips files already on disk, so you can `Ctrl+C` and resume any time.
+Safe to re-run — already-downloaded files are skipped, so you can `Ctrl+C` and resume any time.
 
-## Quickstart (Python API)
+---
+
+## Option B — Python API
+
+For scripting, pipelines, or when you need more control.
+
+### Full batch download
 
 ```python
 import geoimagery as gi
@@ -83,7 +93,7 @@ import geoimagery as gi
 # 1. Initialise Earth Engine (uses your stored credentials).
 gi.initialize(project="my-gcp-project")
 
-# 2. Find what's available for your areas of interest.
+# 2. Find what NAIP imagery is available for your areas.
 inventory = gi.list_available_dates(
     "my_areas.geojson",
     start_date="2022-01-01",
@@ -91,7 +101,7 @@ inventory = gi.list_available_dates(
 )
 inventory.to_csv("availability.csv", index=False)
 
-# 3. Download every month for every area, clipped to your polygons.
+# 3. Download every available month for every polygon, clipped to each shape.
 results = gi.download(
     "my_areas.geojson",
     dates=inventory,
@@ -101,7 +111,7 @@ results = gi.download(
 results.to_csv("download_log.csv", index=False)
 ```
 
-That's it. `./naip_output/` now contains one `.tif` per (area, month), named like `area-id_area-name_June_2023.tif`.
+`./naip_output/` now contains one `.tif` per (area, month), named like `area-id_area-name_June_2023.tif`.
 
 ### Single polygon, single month
 
@@ -111,11 +121,11 @@ import geoimagery as gi
 
 gi.initialize(project="my-gcp-project")
 
-aoi = box(-77.62, 43.12, -77.60, 43.14)  # tiny patch of Rochester, NY
+aoi = box(-77.62, 43.12, -77.60, 43.14)  # small patch of Rochester, NY
 gi.download(aoi, dates=["June 2023"], output_dir="./out")
 ```
 
-### Already have specific months in mind?
+### Specific months across many polygons
 
 ```python
 gi.download(
@@ -125,9 +135,11 @@ gi.download(
 )
 ```
 
+---
+
 ## Accepted geometry inputs
 
-`load_geometries` (and every public function) will accept any of these:
+Every function accepts any of these — no conversion needed:
 
 | Input | Example |
 |---|---|
@@ -137,7 +149,7 @@ gi.download(
 | List of shapely geometries | `[poly1, poly2, poly3]` |
 | GeoJSON dict | `{"type": "FeatureCollection", "features": [...]}` |
 
-If your dataframe has non-standard ID/name columns, point them out:
+If your file uses non-standard ID/name columns:
 
 ```python
 gi.download(
@@ -151,13 +163,13 @@ gi.download(
 
 ## Output format
 
-For each (geometry × month) pair, the library writes a 3-band (R, G, B) GeoTIFF clipped exactly to your polygon. Filenames are `{id}_{name}_{Month}_{Year}.tif`, with unsafe characters replaced.
+For each (polygon × month) pair, geoimagery writes a 3-band (R, G, B) GeoTIFF clipped exactly to your polygon boundary. Filenames follow the pattern `{id}_{name}_{Month}_{Year}.tif`.
 
-`download()` returns a DataFrame logging the status of every attempt: `Downloaded`, `Already Downloaded`, `No Data for Month`, `Download Failed`, or `Error: ...`. Save it as a CSV — it's invaluable for diagnosing what worked.
+`download_log.csv` records the outcome of every attempt: `Downloaded`, `Already Downloaded`, `No Data for Month`, `Download Failed`, or `Error: ...`.
 
 ## Earth Engine quotas & costs
 
-NAIP itself is **public domain** (USDA Farm Service Agency) and free to use, including commercially. Google Earth Engine has separate quotas and tiering:
+NAIP itself is **public domain** (USDA Farm Service Agency) and free to use, including commercially. Google Earth Engine has separate quotas:
 
 - The **noncommercial tier** is free but has concurrent-request limits (~40) and per-request payload caps (~32 MB / 10k×10k pixels). geoimagery handles the payload cap by automatically falling back through 0.6 m → 1 m → 2 m → 4 m resolutions.
 - For commercial use, see Google's [Earth Engine pricing page](https://earthengine.google.com/commercial/).
@@ -171,10 +183,10 @@ You are responsible for staying within the tier appropriate to your use.
 | `initialize(project=...)` | Initialise the Earth Engine client. Call once per process. |
 | `list_available_dates(source, start_date, end_date)` | Return a DataFrame of NAIP months available for each input geometry. |
 | `download(source, dates, output_dir, ...)` | Download clipped GeoTIFFs. |
-| `load_geometries(source, ...)` | Lower-level: normalise any accepted input to a WGS84 GeoDataFrame. |
+| `load_geometries(source, ...)` | Normalise any accepted input to a WGS84 GeoDataFrame. |
 | `parse_available_dates(value)`, `build_month_window(label)`, `sanitize_filename_component(s)` | Pure-Python helpers. |
 
-Full docstrings on every function: `python -c "import geoimagery; help(geoimagery)"`.
+Full docstrings: `python -c "import geoimagery; help(geoimagery)"`.
 
 ## Contributing
 
